@@ -3,16 +3,9 @@ var MyApp;
 
 MyApp = (function() {
 
-  function MyApp() {}
-
-  MyApp.prototype.getTemplate = function() {
-    return "<li><img src=\"{SRC}\" /></li>";
-  };
-
-  MyApp.prototype.getImage = function() {
-    var apikey, url, xhr;
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(e) {
+  function MyApp() {
+    this.xhr = new XMLHttpRequest();
+    this.xhr.onreadystatechange = function(e) {
       var data, html, item, template;
       this.mainList = document.querySelector("#main");
       if (this.readyState === this.DONE) {
@@ -33,13 +26,17 @@ MyApp = (function() {
         return this.mainList.innerHTML = html.join("\n");
       }
     };
+  }
+
+  MyApp.prototype.search = function(text) {
+    var apikey, url;
     url = "http://api.flickr.com/services/rest/?method=flickr.photos.search&extras=url_m&per_page=20&format=json&nojsoncallback=1&safe_search=1";
     apikey = "6ecfcd8d4a3b8a04da6093733db989a2";
     url += '&api_key=' + apikey;
-    url += '&text=' + 'appcircus';
+    url += "&text=" + text;
     url = encodeURI(url);
-    xhr.open("GET", url, true);
-    return xhr.send();
+    this.xhr.open("GET", url, true);
+    return this.xhr.send();
   };
 
   return MyApp;
